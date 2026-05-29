@@ -1,0 +1,18 @@
+# 阶段2起需要 MySQL + Redis；阶段1 仅健康检查可不启动
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: tenant-demo-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: tenant_demo
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./docs/sql/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  redis:
+    image: redis:7-alpine
+    container_name: tenant-demo-redis
+    ports:
+      - "6379:6379"

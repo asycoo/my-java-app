@@ -1,0 +1,57 @@
+server:
+  port: 8061
+
+spring:
+  application:
+    name: tenant-demo-app
+  # 阶段1 无需数据库即可启动；阶段2 删除下方 exclude 并启用 datasource
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+      - org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
+      - com.baomidou.mybatisplus.autoconfigure.MybatisPlusAutoConfiguration
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/tenant_demo?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+
+mybatis-plus:
+  mapper-locations: classpath*:mapper/**/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+
+pagehelper:
+  helper-dialect: mysql
+  reasonable: true
+
+# 租户应用配置（对齐参考 pubfund-zcb.app.root）
+tenant-demo:
+  app:
+    root: /api/tenant-demo
+  auth:
+    exclude-paths:
+      - /api/usr/login/w/signin
+      - /api/usr/login/w/signout
+      - /api/usr/login/r/validate
+      - /api/usr/login/r/current
+      - /api/health/r/ping
+      - /health
+
+session:
+  timeout:
+    seconds: 7200
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+
+logging:
+  level:
+    cn.example.tenant.demo: DEBUG
