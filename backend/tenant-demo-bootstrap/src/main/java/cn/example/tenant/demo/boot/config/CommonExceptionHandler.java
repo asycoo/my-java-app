@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 /**
  * 全局异常处理器。
@@ -32,6 +33,15 @@ public class CommonExceptionHandler {
     public Response<Void> handleIllegalArgument(IllegalArgumentException e) {
         log.warn("业务参数非法: {}", e.getMessage());
         return Response.fail("ILLEGAL_ARGUMENT", e.getMessage());
+    }
+
+    /**
+     * 接口路径不存在（常见于改了代码但未重启，仍跑旧版本 Controller）。
+     */
+    @ExceptionHandler(NoResourceFoundException.class)
+    public Response<Void> handleNotFound(NoResourceFoundException e) {
+        log.warn("接口不存在: {}", e.getResourcePath());
+        return Response.fail("NOT_FOUND", "接口不存在，请确认路径或重启后端: " + e.getResourcePath());
     }
 
     @ExceptionHandler(Exception.class)
