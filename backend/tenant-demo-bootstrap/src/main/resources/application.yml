@@ -4,12 +4,6 @@ server:
 spring:
   application:
     name: tenant-demo-app
-  # 阶段1 无需数据库即可启动；阶段2 删除下方 exclude 并启用 datasource
-  autoconfigure:
-    exclude:
-      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
-      - org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
-      - com.baomidou.mybatisplus.autoconfigure.MybatisPlusAutoConfiguration
   datasource:
     url: jdbc:mysql://127.0.0.1:3306/tenant_demo?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
     username: root

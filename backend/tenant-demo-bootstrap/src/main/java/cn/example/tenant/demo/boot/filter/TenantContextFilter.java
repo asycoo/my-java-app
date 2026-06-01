@@ -1,9 +1,9 @@
 package cn.example.tenant.demo.boot.filter;
 
 import cn.example.tenant.demo.common.context.TenantUserContext;
+import cn.example.tenant.demo.common.util.SessionConstants;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletRequestWrapper;
 import jakarta.servlet.http.HttpServletResponse;
@@ -40,8 +40,9 @@ import java.util.regex.Pattern;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class TenantContextFilter extends OncePerRequestFilter {
 
-    /** Session Cookie 名称，阶段2登录使用 */
-    public static final String TENANT_SESSION_COOKIE_NAME = "tenant-demo-session-id";
+    /** @deprecated 使用 {@link SessionConstants#TENANT_SESSION_COOKIE_NAME} */
+    @Deprecated
+    public static final String TENANT_SESSION_COOKIE_NAME = SessionConstants.TENANT_SESSION_COOKIE_NAME;
 
     @Value("${tenant-demo.app.root:/api/tenant-demo}")
     private String appRoot;
@@ -123,23 +124,7 @@ public class TenantContextFilter extends OncePerRequestFilter {
      * @return sessionId，未找到时返回 {@code null}
      */
     public static String extractSessionId(HttpServletRequest request) {
-        String sessionId = request.getHeader("X-Session-Id");
-        if (sessionId != null && !sessionId.isEmpty()) {
-            return sessionId;
-        }
-        sessionId = request.getHeader("X-Auth-Token");
-        if (sessionId != null && !sessionId.isEmpty()) {
-            return sessionId;
-        }
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if (TENANT_SESSION_COOKIE_NAME.equalsIgnoreCase(cookie.getName())) {
-                    return cookie.getValue();
-                }
-            }
-        }
-        return null;
+        return SessionConstants.extractSessionId(request);
     }
 
     /**
