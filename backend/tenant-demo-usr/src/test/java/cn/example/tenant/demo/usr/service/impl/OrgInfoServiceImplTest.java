@@ -28,13 +28,13 @@ import static org.mockito.Mockito.when;
  *
  * <p>运行：{@code cd backend && mvn -pl tenant-demo-usr test}</p>
  */
-@ExtendWith(MockitoExtension.class)
+@ExtendWith(MockitoExtension.class) // 使用 Mockito 进行单元测试 自动注入 @Mock / @InjectMocks
 class OrgInfoServiceImplTest {
 
-    @Mock
+    @Mock // 假的数据库访问层
     private UsrOrgInfoMapper orgInfoMapper;
 
-    @InjectMocks
+    @InjectMocks // 自动注入 @Mock 的依赖
     private OrgInfoServiceImpl orgInfoService;
 
     @AfterEach
@@ -74,12 +74,12 @@ class OrgInfoServiceImplTest {
 
         when(orgInfoMapper.insert(any(UsrOrgInfo.class))).thenAnswer(inv -> {
             UsrOrgInfo org = inv.getArgument(0);
-            org.setId(100L);
-            return 1;
+            org.setId(100L); // id=100L
+            return 1; // 插入成功返回1行
         });
 
         Long id = orgInfoService.create(po);
         assertThat(id).isEqualTo(100L);
-        verify(orgInfoMapper).insert(any(UsrOrgInfo.class));
+        verify(orgInfoMapper).insert(any(UsrOrgInfo.class)); // verify默认是调用一次 verify(orgInfoMapper, times(1)).insert(any(UsrOrgInfo.class));
     }
 }
