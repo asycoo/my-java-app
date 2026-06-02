@@ -8,6 +8,7 @@
         <groupId>cn.example.tenant</groupId>
         <artifactId>tenant-demo-app</artifactId>
         <version>1.0.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>tenant-demo-bootstrap</artifactId>
