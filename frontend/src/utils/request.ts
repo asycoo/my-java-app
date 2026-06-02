@@ -20,11 +20,12 @@ const client = axios.create({
 client.interceptors.response.use(
   (res) => res,
   (err) => {
-    if (err.response?.status === 401) {
-      const tenant = err.config?.headers?.['X-Tenant-Code'] as string | undefined;
-      if (tenant && !window.location.pathname.includes('/login')) {
-        window.location.href = `/${tenant}/login`;
-      }
+    const tenant = err.config?.headers?.['X-Tenant-Code'] as string | undefined;
+    if (err.response?.status === 401 && tenant && !window.location.pathname.includes('/login')) {
+      window.location.href = `/${tenant}/login`;
+    }
+    if (err.response?.status === 403) {
+      return Promise.reject(new Error('当前角色无权限执行此操作'));
     }
     return Promise.reject(err);
   },

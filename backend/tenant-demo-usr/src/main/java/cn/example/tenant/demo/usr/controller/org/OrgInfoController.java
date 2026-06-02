@@ -1,5 +1,7 @@
 package cn.example.tenant.demo.usr.controller.org;
 
+import cn.example.tenant.demo.common.annotation.RequireRole;
+import cn.example.tenant.demo.common.constant.UserRole;
 import cn.example.tenant.demo.common.context.TenantUserContext;
 import cn.example.tenant.demo.common.entity.Response;
 import cn.example.tenant.demo.usr.controller.org.dto.CreateOrgPO;
@@ -42,6 +44,7 @@ public class OrgInfoController {
     }
 
     @Operation(summary = "新增组织")
+    @RequireRole(UserRole.ADMIN)
     @PostMapping("/w/create")
     public Response<Map<String, Long>> create(@RequestBody @Valid CreateOrgPO po) {
         Long orgId = orgInfoService.create(po);
@@ -49,6 +52,7 @@ public class OrgInfoController {
     }
 
     @Operation(summary = "更新组织")
+    @RequireRole(UserRole.ADMIN)
     @PutMapping("/w/update")
     public Response<Void> update(@RequestBody @Valid UpdateOrgPO po) {
         orgInfoService.update(po);
@@ -56,6 +60,7 @@ public class OrgInfoController {
     }
 
     @Operation(summary = "停用组织")
+    @RequireRole(UserRole.ADMIN)
     @PostMapping("/w/disable")
     public Response<Void> disable(@RequestParam Long orgId) {
         orgInfoService.disable(orgId);

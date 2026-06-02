@@ -1,5 +1,7 @@
 package cn.example.tenant.demo.usr.controller.person;
 
+import cn.example.tenant.demo.common.annotation.RequireRole;
+import cn.example.tenant.demo.common.constant.UserRole;
 import cn.example.tenant.demo.common.context.TenantUserContext;
 import cn.example.tenant.demo.common.entity.PageResult;
 import cn.example.tenant.demo.common.entity.Response;
@@ -45,6 +47,7 @@ public class OrgPersonController {
     }
 
     @Operation(summary = "新增成员")
+    @RequireRole(UserRole.ADMIN)
     @PostMapping("/w/create")
     public Response<CreatePersonRO> create(@RequestBody @Valid CreatePersonPO po) {
         CreatePersonCmd cmd = toCreatePersonCmd(po);
@@ -55,6 +58,7 @@ public class OrgPersonController {
     }
 
     @Operation(summary = "更新成员")
+    @RequireRole(UserRole.ADMIN)
     @PutMapping("/w/update")
     public Response<Void> update(@RequestBody @Valid UpdatePersonPO po) {
         orgPersonService.updatePerson(po);
@@ -62,6 +66,7 @@ public class OrgPersonController {
     }
 
     @Operation(summary = "停用成员")
+    @RequireRole(UserRole.ADMIN)
     @PostMapping("/w/disable")
     public Response<Void> disable(@RequestParam Long personId) {
         orgPersonService.disablePerson(personId);

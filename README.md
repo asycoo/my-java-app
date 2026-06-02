@@ -10,7 +10,7 @@
 | 2 | ✅ 已完成 | 登录 Session + AuthInterceptor |
 | 3 | ✅ 已完成 | 组织/成员 CRUD + MyMetaObjectHandler |
 | 4 | ✅ 已完成 | React + Ant Design 前端 |
-| 5 | 待实施 | 角色权限 + 文档 |
+| 5 | ✅ 已完成 | 角色权限 + java-for-frontend.md + 单测 |
 
 ## 本地启动
 
@@ -98,8 +98,9 @@ http://localhost:8061/swagger-ui.html
 
 | 租户 | 用户名 | 密码 |
 |------|--------|------|
-| tenant_a | admin | 123456 |
-| tenant_b | admin | 123456 |
+| tenant_a | admin | 123456 | ADMIN，可增删改 |
+| tenant_a | user1 | 123456 | USER，仅可查看列表 |
+| tenant_b | admin | 123456 | ADMIN |
 
 docker终端：SET NAMES utf8mb4;解决中文问题
 curl调接口最后加：| python3 -c "import sys,json; print(json.dumps(json.load(sys.stdin), ensure_ascii=False, indent=2))"
@@ -157,6 +158,29 @@ curl -s -b /tmp/cookies_b.txt \
 docker exec -i tenant-demo-mysql mysql -uroot -proot --default-character-set=utf8mb4 tenant_demo < docs/sql/init.sql
 ```
 
+## 阶段 5：角色权限
+
+- 写接口（组织/成员 create、update、disable）需 `ADMIN`
+- 注解：`@RequireRole(UserRole.ADMIN)` + `RoleAuthInterceptor`
+- 普通用户调用写接口 → HTTP 403，`code=AUTH_FORBIDDEN`
+
+```bash
+# USER 登录后尝试新建组织 → 403
+curl -s -c /tmp/cookies_user.txt -X POST \
+  'http://localhost:8061/api/tenant-demo/tenant_a/api/usr/login/w/signin' \
+  -H 'Content-Type: application/json' \
+  -d '{"username":"user1","password":"123456"}'
+curl -s -w "\nHTTP:%{http_code}\n" -b /tmp/cookies_user.txt -X POST \
+  'http://localhost:8061/api/tenant-demo/tenant_a/api/usr/org/w/create' \
+  -H 'Content-Type: application/json' \
+  -d '{"orgName":"无权限测试"}'
+```
+
+## 文档与测试
+
+- 前端开发者 Java 速查：[docs/java-for-frontend.md](docs/java-for-frontend.md)
+- 单测：`cd backend && mvn test`
+
 ## 目录结构
 
 ```
@@ -164,4 +188,5 @@ backend/                 # Java 多模块后端
 frontend/                # React + Ant Design + Vite
 docs/
   sql/init.sql           # 建表与种子数据
+  java-for-frontend.md   # Next/Prisma 对照 Java 速查
 ```

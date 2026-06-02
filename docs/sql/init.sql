@@ -66,8 +66,9 @@ ON DUPLICATE KEY UPDATE name = VALUES(name);
 
 INSERT INTO sys_user (sys_tenant_code, username, password, nickname, role, status) VALUES
     ('tenant_a', 'admin', '$2b$10$JCbroEACDjWEgQN2CA/BzeqBu0hENLQaX9tbKZNaMjVp79RZNDkmC', '管理员A', 'ADMIN', 1),
+    ('tenant_a', 'user1', '$2b$10$JCbroEACDjWEgQN2CA/BzeqBu0hENLQaX9tbKZNaMjVp79RZNDkmC', '普通用户A', 'USER', 1),
     ('tenant_b', 'admin', '$2b$10$JCbroEACDjWEgQN2CA/BzeqBu0hENLQaX9tbKZNaMjVp79RZNDkmC', '管理员B', 'ADMIN', 1)
-ON DUPLICATE KEY UPDATE nickname = VALUES(nickname);
+ON DUPLICATE KEY UPDATE nickname = VALUES(nickname), role = VALUES(role);
 
 INSERT INTO usr_org_info (org_name, org_short_name, org_remark, org_status, sys_tenant_code, r_add_by, r_modified_by) VALUES
     ('示例组织A', '组织A', 'tenant_a 种子数据', 1, 'tenant_a', 0, 0),

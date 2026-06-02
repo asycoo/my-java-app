@@ -2,11 +2,13 @@ import { useCallback, useEffect, useState } from 'react';
 import { Button, Form, Input, Modal, Space, Table, Typography, message } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { Link, useParams } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 import type { PersonItem } from '../../types/api';
 import { createPerson, disablePerson, fetchPersonList } from '../../services/person';
 
 export default function PersonListPage() {
   const { tenant = '', orgId = '' } = useParams();
+  const { isAdmin } = useAuth();
   const orgIdNum = Number(orgId);
   const [list, setList] = useState<PersonItem[]>([]);
   const [total, setTotal] = useState(0);
@@ -64,11 +66,12 @@ export default function PersonListPage() {
     { title: '邮箱', dataIndex: 'email' },
     {
       title: '操作',
-      render: (_, row) => (
-        <Button type="link" danger onClick={() => handleDisable(row.id)}>
-          停用
-        </Button>
-      ),
+      render: (_, row) =>
+        isAdmin ? (
+          <Button type="link" danger onClick={() => handleDisable(row.id)}>
+            停用
+          </Button>
+        ) : null,
     },
   ];
 
@@ -101,9 +104,11 @@ export default function PersonListPage() {
           style={{ width: 200 }}
         />
         <Button onClick={() => { setPageNum(1); load(); }}>查询</Button>
-        <Button type="primary" onClick={() => setModalOpen(true)}>
-          新增成员
-        </Button>
+        {isAdmin && (
+          <Button type="primary" onClick={() => setModalOpen(true)}>
+            新增成员
+          </Button>
+        )}
       </Space>
       <Table
         rowKey="id"

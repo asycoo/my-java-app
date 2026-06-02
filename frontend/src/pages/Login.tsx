@@ -37,7 +37,9 @@ export default function LoginPage() {
     >
       <Card title={`登录 · ${tenant}`} style={{ width: 400 }}>
         <Typography.Paragraph type="secondary">
-          种子账号：admin / 123456。也可访问 /tenant_b/login 切换租户。
+          管理员：admin / 123456（可增删改）<br />
+          普通用户：user1 / 123456（仅查看）<br />
+          也可访问 /tenant_b/login 切换租户。
         </Typography.Paragraph>
         <Form layout="vertical" onFinish={onFinish} initialValues={{ username: 'admin', password: '123456' }}>
           <Form.Item name="username" label="用户名" rules={[{ required: true }]}>

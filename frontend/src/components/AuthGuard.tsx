@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Spin } from 'antd';
 import { Navigate, Outlet, useParams } from 'react-router-dom';
 import AppLayout from './AppLayout';
+import { AuthProvider } from '../context/AuthContext';
 import { getCurrentSession } from '../services/auth';
 
 export default function AuthGuard() {
@@ -9,6 +10,7 @@ export default function AuthGuard() {
   const [loading, setLoading] = useState(true);
   const [ok, setOk] = useState(false);
   const [nickname, setNickname] = useState('');
+  const [role, setRole] = useState('');
 
   useEffect(() => {
     let cancelled = false;
@@ -18,6 +20,7 @@ export default function AuthGuard() {
         if (!cancelled) {
           setOk(res.success && !!res.result);
           setNickname(res.result?.nickname || res.result?.username || '');
+          setRole(res.result?.role || '');
         }
       } catch {
         if (!cancelled) setOk(false);
@@ -42,9 +45,13 @@ export default function AuthGuard() {
     return <Navigate to={`/${tenant}/login`} replace />;
   }
 
+  const authState = { nickname, role, isAdmin: role === 'ADMIN' };
+
   return (
-    <AppLayout nickname={nickname}>
-      <Outlet />
-    </AppLayout>
+    <AuthProvider value={authState}>
+      <AppLayout nickname={nickname} role={role}>
+        <Outlet />
+      </AppLayout>
+    </AuthProvider>
   );
 }

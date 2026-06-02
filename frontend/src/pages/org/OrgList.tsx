@@ -2,11 +2,13 @@ import { useCallback, useEffect, useState } from 'react';
 import { Button, Form, Input, Modal, Space, Table, message } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { Link, useParams } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 import type { OrgItem } from '../../types/api';
 import { createOrg, disableOrg, fetchOrgList } from '../../services/org';
 
 export default function OrgListPage() {
   const { tenant = '' } = useParams();
+  const { isAdmin } = useAuth();
   const [list, setList] = useState<OrgItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [keyword, setKeyword] = useState('');
@@ -72,9 +74,11 @@ export default function OrgListPage() {
       render: (_, row) => (
         <Space>
           <Link to={`/${tenant}/org/${row.id}/person`}>成员</Link>
-          <Button type="link" danger onClick={() => handleDisable(row.id)}>
-            停用
-          </Button>
+          {isAdmin && (
+            <Button type="link" danger onClick={() => handleDisable(row.id)}>
+              停用
+            </Button>
+          )}
         </Space>
       ),
     },
@@ -91,9 +95,11 @@ export default function OrgListPage() {
           onPressEnter={load}
         />
         <Button onClick={load}>查询</Button>
-        <Button type="primary" onClick={() => setModalOpen(true)}>
-          新建组织
-        </Button>
+        {isAdmin && (
+          <Button type="primary" onClick={() => setModalOpen(true)}>
+            新建组织
+          </Button>
+        )}
       </Space>
       <Table rowKey="id" loading={loading} columns={columns} dataSource={list} />
 

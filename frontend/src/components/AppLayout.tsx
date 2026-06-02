@@ -7,10 +7,11 @@ const { Header, Content } = Layout;
 
 interface AppLayoutProps {
   nickname?: string;
+  role?: string;
   children?: ReactNode;
 }
 
-export default function AppLayout({ nickname, children }: AppLayoutProps) {
+export default function AppLayout({ nickname, role, children }: AppLayoutProps) {
   const { tenant = '' } = useParams();
   const navigate = useNavigate();
 
@@ -32,7 +33,10 @@ export default function AppLayout({ nickname, children }: AppLayoutProps) {
         </Space>
         <Space>
           {nickname && (
-            <Typography.Text style={{ color: '#fff' }}>{nickname}</Typography.Text>
+            <Typography.Text style={{ color: '#fff' }}>
+              {nickname}
+              {role ? ` (${role})` : ''}
+            </Typography.Text>
           )}
           <Button type="link" style={{ color: '#fff' }} onClick={handleLogout}>
             退出
