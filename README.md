@@ -9,7 +9,7 @@
 | 1 | ✅ 已完成 | Maven 三模块、租户 Filter、健康检查 |
 | 2 | ✅ 已完成 | 登录 Session + AuthInterceptor |
 | 3 | ✅ 已完成 | 组织/成员 CRUD + MyMetaObjectHandler |
-| 4 | 待实施 | React + Ant Design 前端 |
+| 4 | ✅ 已完成 | React + Ant Design 前端 |
 | 5 | 待实施 | 角色权限 + 文档 |
 
 ## 本地启动
@@ -63,6 +63,24 @@ curl -s -b /tmp/cookies.txt \
 说明导入 `init.sql` 时未用 utf8mb4，请用上一节的 `docker exec ... --default-character-set=utf8mb4` 重新执行脚本。
 
 后端已在 `application.yml` 中强制 HTTP 响应 UTF-8；改配置后需重启 `spring-boot:run`。
+
+### 3. 启动前端（阶段 4）
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+浏览器打开：http://localhost:5173/tenant_a/login
+
+| 路由 | 说明 |
+|------|------|
+| `/:tenant/login` | 登录（Cookie 会话） |
+| `/:tenant/org` | 组织列表、新建、停用 |
+| `/:tenant/org/:orgId/person` | 成员分页、新增 |
+
+Vite 已将 `/api/tenant-demo` 代理到 `http://localhost:8061`，需先启动后端。
 
 ### Swagger
 
@@ -142,10 +160,8 @@ docker exec -i tenant-demo-mysql mysql -uroot -proot --default-character-set=utf
 ## 目录结构
 
 ```
-backend/
-  tenant-demo-common/    # Response、TenantUserContext、HealthController
-  tenant-demo-usr/       # 登录、组织、成员
-  tenant-demo-bootstrap/ # 启动、Filter、Interceptor、application.yml
+backend/                 # Java 多模块后端
+frontend/                # React + Ant Design + Vite
 docs/
   sql/init.sql           # 建表与种子数据
 ```

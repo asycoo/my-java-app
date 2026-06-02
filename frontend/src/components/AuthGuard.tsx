@@ -1,0 +1,50 @@
+import { useEffect, useState } from 'react';
+import { Spin } from 'antd';
+import { Navigate, Outlet, useParams } from 'react-router-dom';
+import AppLayout from './AppLayout';
+import { getCurrentSession } from '../services/auth';
+
+export default function AuthGuard() {
+  const { tenant = '' } = useParams();
+  const [loading, setLoading] = useState(true);
+  const [ok, setOk] = useState(false);
+  const [nickname, setNickname] = useState('');
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await getCurrentSession(tenant);
+        if (!cancelled) {
+          setOk(res.success && !!res.result);
+          setNickname(res.result?.nickname || res.result?.username || '');
+        }
+      } catch {
+        if (!cancelled) setOk(false);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [tenant]);
+
+  if (loading) {
+    return (
+      <div style={{ padding: 80, textAlign: 'center' }}>
+        <Spin size="large" />
+      </div>
+    );
+  }
+
+  if (!ok) {
+    return <Navigate to={`/${tenant}/login`} replace />;
+  }
+
+  return (
+    <AppLayout nickname={nickname}>
+      <Outlet />
+    </AppLayout>
+  );
+}
