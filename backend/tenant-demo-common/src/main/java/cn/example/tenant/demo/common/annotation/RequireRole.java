@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
  */
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface RequireRole {
+public @interface RequireRole { // 声明这是一个注解类型（不是普通接口）
 
     /** 允许的角色列表，满足其一即可 */
     String[] value();

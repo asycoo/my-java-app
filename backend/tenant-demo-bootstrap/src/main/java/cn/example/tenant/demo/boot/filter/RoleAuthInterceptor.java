@@ -26,8 +26,9 @@ public class RoleAuthInterceptor implements HandlerInterceptor {
         if (!(handler instanceof HandlerMethod handlerMethod)) {
             return true;
         }
-
+        // 从方法上获取 @RequireRole 注解
         RequireRole requireRole = AnnotationUtils.findAnnotation(handlerMethod.getMethod(), RequireRole.class);
+        // 如果方法上没有 @RequireRole 注解，则从类上获取 @RequireRole 注解
         if (requireRole == null) {
             requireRole = AnnotationUtils.findAnnotation(handlerMethod.getBeanType(), RequireRole.class);
         }
